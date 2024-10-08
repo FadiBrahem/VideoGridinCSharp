@@ -1,0 +1,10 @@
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\bin\Debug\net472\VideoGridProcessor.exe.config
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\bin\Debug\net472\VideoGridProcessor.exe
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\bin\Debug\net472\VideoGridProcessor.pdb
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.AssemblyInfoInputs.cache
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.AssemblyInfo.cs
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.exe
+C:\Users\Administrator\Desktop\grid\VideoGridProcessor\obj\Debug\net472\VideoGridProcessor.pdb
