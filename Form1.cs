@@ -126,68 +126,76 @@ namespace VideoGridProcessor
         /// </summary>
         /// <param name="videoPaths">List of video file paths.</param>
         /// <returns>filter_complex string.</returns>
-        private string BuildFilterComplex(List<string> videoPaths)
-        {
-            int numVideos = videoPaths.Count;
-            string filter = "";
+private string BuildFilterComplex(List<string> videoPaths)
+{
+    int numVideos = videoPaths.Count;
+    string filter = "";
+    int paddingHeight = 40; // Height of the black padding area
 
-            switch (numVideos)
-            {
-                case 2:
-                    // Side by side with numbering
-                    filter = "[0:v]scale=320:240,drawtext=text='1':x=10:y=10:fontsize=24:fontcolor=white[v0];" +
-                             "[1:v]scale=320:240,drawtext=text='2':x=10:y=10:fontsize=24:fontcolor=white[v1];" +
-                             "[v0][v1]hstack=inputs=2[out]";
-                    break;
-                case 3:
-                    // Two on top, one below with numbering
-                    filter = "[0:v]scale=320:240,drawtext=text='1':x=10:y=10:fontsize=24:fontcolor=white[v0];" +
-                             "[1:v]scale=320:240,drawtext=text='2':x=10:y=10:fontsize=24:fontcolor=white[v1];" +
-                             "[2:v]scale=640:240,drawtext=text='3':x=10:y=10:fontsize=24:fontcolor=white[v2];" +
-                             "[v0][v1]hstack=inputs=2[top];" +
-                             "[top][v2]vstack=inputs=2[out]";
-                    break;
-                case 4:
-                    // 2x2 grid with numbering
-                    filter = "[0:v]scale=320:240,drawtext=text='1':x=10:y=10:fontsize=24:fontcolor=white[v0];" +
-                             "[1:v]scale=320:240,drawtext=text='2':x=10:y=10:fontsize=24:fontcolor=white[v1];" +
-                             "[2:v]scale=320:240,drawtext=text='3':x=10:y=10:fontsize=24:fontcolor=white[v2];" +
-                             "[3:v]scale=320:240,drawtext=text='4':x=10:y=10:fontsize=24:fontcolor=white[v3];" +
-                             "[v0][v1]hstack=inputs=2[top];" +
-                             "[v2][v3]hstack=inputs=2[bottom];" +
-                             "[top][bottom]vstack=inputs=2[out]";
-                    break;
-                case 5:
-                    // Three on top, two below with numbering
-                    filter = "[0:v]scale=320:240,drawtext=text='1':x=10:y=10:fontsize=24:fontcolor=white[v0];" +
-                             "[1:v]scale=320:240,drawtext=text='2':x=10:y=10:fontsize=24:fontcolor=white[v1];" +
-                             "[2:v]scale=320:240,drawtext=text='3':x=10:y=10:fontsize=24:fontcolor=white[v2];" +
-                             "[3:v]scale=320:240,drawtext=text='4':x=10:y=10:fontsize=24:fontcolor=white[v3];" +
-                             "[4:v]scale=640:240,drawtext=text='5':x=10:y=10:fontsize=24:fontcolor=white[v4];" +
-                             "[v0][v1][v2]hstack=inputs=3[top];" +
-                             "[v3][v4]hstack=inputs=2[bottom];" +
-                             "[top][bottom]vstack=inputs=2[out]";
-                    break;
-                case 6:
-                    // 3x2 grid with numbering
-                    filter = "[0:v]scale=320:240,drawtext=text='1':x=10:y=10:fontsize=24:fontcolor=white[v0];" +
-                             "[1:v]scale=320:240,drawtext=text='2':x=10:y=10:fontsize=24:fontcolor=white[v1];" +
-                             "[2:v]scale=320:240,drawtext=text='3':x=10:y=10:fontsize=24:fontcolor=white[v2];" +
-                             "[3:v]scale=320:240,drawtext=text='4':x=10:y=10:fontsize=24:fontcolor=white[v3];" +
-                             "[4:v]scale=320:240,drawtext=text='5':x=10:y=10:fontsize=24:fontcolor=white[v4];" +
-                             "[5:v]scale=320:240,drawtext=text='6':x=10:y=10:fontsize=24:fontcolor=white[v5];" +
-                             "[v0][v1][v2]hstack=inputs=3[top];" +
-                             "[v3][v4][v5]hstack=inputs=3[bottom];" +
-                             "[top][bottom]vstack=inputs=2[out]";
-                    break;
-                default:
-                    // Unsupported number of videos
-                    filter = "";
-                    break;
-            }
+    // Base filter for countdown timer
+    string countdownFilter = $"drawtext=fontfile=/path/to/font.ttf:fontsize=24:fontcolor=white:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-tw)/2:y={paddingHeight/2-12}:text='%{{pts\\:hms}}':rate=30";
 
-            return filter;
-        }
+    switch (numVideos)
+    {
+        case 2:
+            filter = "[0:v]scale=320:240[v0];" +
+                     "[1:v]scale=320:240[v1];" +
+                     "[v0][v1]hstack=inputs=2[stacked];" +
+                     $"[stacked]pad=iw:ih+{paddingHeight}:0:{paddingHeight}:color=black[padded];" +
+                     $"[padded]{countdownFilter}[out]";
+            break;
+        case 3:
+            filter = "[0:v]scale=320:240[v0];" +
+                     "[1:v]scale=320:240[v1];" +
+                     "[2:v]scale=640:240[v2];" +
+                     "[v0][v1]hstack=inputs=2[top];" +
+                     "[top][v2]vstack=inputs=2[stacked];" +
+                     $"[stacked]pad=iw:ih+{paddingHeight}:0:{paddingHeight}:color=black[padded];" +
+                     $"[padded]{countdownFilter}[out]";
+            break;
+        case 4:
+            filter = "[0:v]scale=320:240[v0];" +
+                     "[1:v]scale=320:240[v1];" +
+                     "[2:v]scale=320:240[v2];" +
+                     "[3:v]scale=320:240[v3];" +
+                     "[v0][v1]hstack=inputs=2[top];" +
+                     "[v2][v3]hstack=inputs=2[bottom];" +
+                     "[top][bottom]vstack=inputs=2[stacked];" +
+                     $"[stacked]pad=iw:ih+{paddingHeight}:0:{paddingHeight}:color=black[padded];" +
+                     $"[padded]{countdownFilter}[out]";
+            break;
+        case 5:
+            filter = "[0:v]scale=320:240[v0];" +
+                     "[1:v]scale=320:240[v1];" +
+                     "[2:v]scale=320:240[v2];" +
+                     "[3:v]scale=320:240[v3];" +
+                     "[4:v]scale=640:240[v4];" +
+                     "[v0][v1][v2]hstack=inputs=3[top];" +
+                     "[v3][v4]hstack=inputs=2[bottom];" +
+                     "[top][bottom]vstack=inputs=2[stacked];" +
+                     $"[stacked]pad=iw:ih+{paddingHeight}:0:{paddingHeight}:color=black[padded];" +
+                     $"[padded]{countdownFilter}[out]";
+            break;
+        case 6:
+            filter = "[0:v]scale=320:240[v0];" +
+                     "[1:v]scale=320:240[v1];" +
+                     "[2:v]scale=320:240[v2];" +
+                     "[3:v]scale=320:240[v3];" +
+                     "[4:v]scale=320:240[v4];" +
+                     "[5:v]scale=320:240[v5];" +
+                     "[v0][v1][v2]hstack=inputs=3[top];" +
+                     "[v3][v4][v5]hstack=inputs=3[bottom];" +
+                     "[top][bottom]vstack=inputs=2[stacked];" +
+                     $"[stacked]pad=iw:ih+{paddingHeight}:0:{paddingHeight}:color=black[padded];" +
+                     $"[padded]{countdownFilter}[out]";
+            break;
+        default:
+            filter = "";
+            break;
+    }
+
+    return filter;
+}
 
         /// <summary>
         /// Builds the FFmpeg command string based on selected videos and filter_complex.
